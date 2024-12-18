@@ -33,11 +33,11 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     it('campo telefone continua vazio quando preenchido com valor não-numérico', function() {
         cy.get('#phone').type('abacdefghijklmnopqrstuv').should('have.value', '')
     })
-    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function() {
+    it.only('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function() {
         cy.get('#firstName').type('Adriano')
         cy.get('#lastName').type('Costa')
         cy.get('#email').type('adriano@teste.com')
-        cy.get('#phone-checkbox').click()
+        cy.get('#phone-checkbox').click()  // pode usar tbm o .check aqui
         cy.get('#open-text-area').type('teste')
         cy.get('button[type="submit"]').click() 
         
@@ -74,6 +74,31 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
     it('seleciona um produto (Blog) por seu índice', function() {
         cy.get('#product').select(1).should('have.value', 'blog')
+    })
+    it('marca cada tipo de atendimento', function() {
+        cy.get('input[type="radio"]')
+            .should('have.length', 3)
+            .each(function($radio){
+                cy.wrap($radio).check().should('be.checked')
+            })
+    })
+    it('marca o tipo de atendimento "Feedback"', function() {
+        cy.get('input[type="radio"][value="feedback"').check().should('have.value', 'feedback')
+    })
+    it('marca ambos checkboxes, depois desmarca o último', function() {
+        cy.get('input[type="checkbox"]').check()
+            .should('be.checked')
+            .last().uncheck()
+            .should('not.be.checked')
+    })
+    it('exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function() {
+        cy.get('input[type="checkbox"]').check()
+            .should('be.checked')
+            .first().uncheck()
+            .should('not.be.checked')
+        cy.get('button[type="submit"]').click() 
+        
+        cy.get('.error').should('be.visible')    
     })
   })
   
